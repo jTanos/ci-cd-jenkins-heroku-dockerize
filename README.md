@@ -1,23 +1,12 @@
-Iniciar sesión en Heroku en la CLI
+### Iniciar sesión en Heroku en la CLI
 
 ```
 heroku login
 ```
 
-Después de eso, agregue un control remoto a su repositorio local con:
-
-```
-heroku git:remote -a heroku-app-name
-```
-
-Luego presione el código usando:
-
-```
-git push heroku <github-branch-name>
-```
-
-Esto se hace para asegurarse de que todo funcione correctamente antes de automatizarlo. Puede hacer clic en la aplicación abierta en el panel de la aplicación Heroku para verificar si funciona correctamente.
-
+<details>
+<summary style="font-size:30px">DEPLOY WITHOUT MANIFEST</summary>
+<blockquote>
 ### Inicia sesión en el aspecto contenedor de Heroku.
 
 ```
@@ -27,17 +16,83 @@ heroku container:login
 ### Crea aplicacion en heroku
 
 ```
-heroku create APP_NAME
+heroku create -a HEROKU_APP_NAME
 ```
 
-### Construye el contenedor docker localmente y envía la imagen a Heroku para que lo tenga.
+### Add heroku git remote
 
 ```
-heroku container:push web -a APP_NAME
+heroku git:remote -a HEROKU_APP_NAME
 ```
 
-### Dice a Heroku que libere ese contenedor
+### Establezca la pila de su aplicación en container
 
 ```
-heroku container:release web -a APP_NAME
+heroku stack:set container
 ```
+
+### Comprometerse heroku.yml con git:
+
+```
+git add heroku.yml
+git commit -m "Added heroku.yml"
+```
+
+### Empuje su aplicación a Heroku
+
+```
+git push heroku <BRANCH>
+```
+
+</blockquote>
+</details>
+
+<details>
+<summary style="font-size:30px">DEPLOY WITH MANIFEST</summary>
+<blockquote>
+
+### Inicia sesión en el aspecto contenedor de Heroku.
+
+```
+heroku container:login
+```
+
+### Para crear una aplicación desde la setup sección definida en su heroku.yml manifiesto, instale el heroku-manifest complemento desde el betacanal de actualización:
+
+```
+heroku update beta
+heroku plugins:install @heroku-cli/plugin-manifest
+```
+
+### Puede volver al flujo de actualización estable y eliminar el complemento en cualquier momento:
+
+```
+heroku update stable
+heroku plugins:remove manifest
+```
+
+### Luego crea tu aplicación usando la --manifest bandera. La pila de la aplicación se establecerá automáticamente en container:
+
+```
+heroku create --manifest
+
+Creating ⬢ HEROKU_APP_NAME... done, stack is container
+Adding heroku-postgresql... done
+Setting config vars... done
+```
+
+### Comprometerse heroku.yml con git:
+
+```
+git add heroku.yml
+git commit -m "Added heroku.yml"
+```
+
+### Empuje el código:
+
+```
+git push heroku <BRANCH>
+```
+
+</blockquote>
+</details>
